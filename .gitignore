@@ -1,0 +1,11 @@
+# 168MB of full-resolution originals. Keep them off GitHub: git history is
+# permanent, and on Pages they would be publicly downloadable.
+# Derivatives in assets/img/ are committed, so the site builds without these.
+_source/
+
+# regenerable encode cache
+.cache/
+
+Thumbs.db
+desktop.ini
+.DS_Store
