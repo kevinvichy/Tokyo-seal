@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 # Generates WebP derivatives from _source/sets/<slug>/*.jpg into
 # assets/img/sets/<slug>/<NN>-<width>.webp
+#
+# One width ladder for every photo, portrait or landscape. Three widths only:
+#   400   grid cells and set cards at 1x
+#   800   the same slots at 2x, and the about/lead figures at 1x
+#   1600  the home hero and the lightbox
+# Keep it at three. Adding near-duplicate widths (396 vs 400 vs 352) buys
+# nothing and multiplies the files that have to ship.
+#
 # Usage: FFMPEG=/path/to/ffmpeg bash tools/build-images.sh
 
 set -euo pipefail
@@ -9,53 +17,28 @@ cd "$(dirname "$0")/.."
 FFMPEG="${FFMPEG:-ffmpeg}"
 command -v "$FFMPEG" >/dev/null || { echo "ffmpeg not found; set FFMPEG=/path/to/ffmpeg" >&2; exit 1; }
 
-LANDSCAPE_WIDTHS="352 528 704 1056 1760"
-PORTRAIT_WIDTHS="264 396 528 792 1320"
-PLACEHOLDER_WIDTH=32
-QUALITY=82
+WIDTHS="400 800 1600"
+QUALITY=80
 
-CACHE_DIR=".cache/images"
-mkdir -p "$CACHE_DIR"
+encoded=0
 
-encoded=0; reused=0; skipped=0
-
-encode() {
-  "$FFMPEG" -v error -y -i "$1" \
-    -vf "scale=$3:-2:flags=lanczos" \
-    -c:v libwebp -quality "$QUALITY" -compression_level 6 \
-    -frames:v 1 "$2"
-}
-
-while IFS='|' read -r slug src orient; do
-  [ -z "${slug:-}" ] && continue
-  case "$orient" in
-    portrait)  widths="$PORTRAIT_WIDTHS" ;;
-    landscape) widths="$LANDSCAPE_WIDTHS" ;;
-    *) echo "unknown orientation '$orient' for $slug" >&2; exit 1 ;;
-  esac
-
+for dir in _source/sets/*/; do
+  slug="$(basename "$dir")"
   outdir="assets/img/sets/$slug"
   mkdir -p "$outdir"
 
-  for photo in "_source/sets/$slug"/*.jpg; do
+  for photo in "$dir"*.jpg; do
     [ -e "$photo" ] || continue
     base="$(basename "$photo" .jpg)"
-    hash="$(md5sum "$photo" | cut -d' ' -f1)"
-
-    for w in $widths $PLACEHOLDER_WIDTH; do
-      dest="$outdir/${base}-${w}.webp"
-      [ -f "$dest" ] && [ "$dest" -nt "$photo" ] && { skipped=$((skipped+1)); continue; }
-
-      cached="$CACHE_DIR/${hash}-${w}.webp"
-      if [ -f "$cached" ]; then
-        cp "$cached" "$dest"; reused=$((reused+1))
-      else
-        encode "$photo" "$dest" "$w"
-        cp "$dest" "$cached"; encoded=$((encoded+1))
-      fi
+    for w in $WIDTHS; do
+      "$FFMPEG" -v error -y -i "$photo" \
+        -vf "scale='min($w,iw)':-2:flags=lanczos" \
+        -c:v libwebp -quality "$QUALITY" -compression_level 6 \
+        -frames:v 1 "$outdir/${base}-${w}.webp"
+      encoded=$((encoded+1))
     done
   done
-  echo "  $slug ($orient) -> $(ls "$outdir" | wc -l) files"
-done < tools/sets.map
+  echo "  $slug -> $(ls "$outdir" | wc -l) files"
+done
 
-echo "done: $encoded encoded, $reused reused, $skipped up to date"
+echo "done: $encoded encoded"

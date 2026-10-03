@@ -1,5 +1,25 @@
-gallery-1|A7S00004.jpg|portrait
-gallery-2|A7S01580.jpg|portrait
-gallery-3|A7S05095.jpg|landscape
-gallery-4|A7S05395.jpg|landscape
-gallery-5|A7S08392.jpg|landscape
+# slug | photo | source WxH | orientation
+# Derivatives are always 400/800/1600 wide; see tools/build-images.sh.
+gallery-1|01.jpg|1848x2464|portrait
+gallery-1|02.jpg|1848x2464|portrait
+gallery-1|03.jpg|2464x1848|landscape
+gallery-1|04.jpg|1848x2464|portrait
+gallery-2|01.jpg|1848x2464|portrait
+gallery-2|02.jpg|1848x2464|portrait
+gallery-2|03.jpg|1726x2301|portrait
+gallery-2|04.jpg|1848x2464|portrait
+gallery-3|01.jpg|3560x2671|landscape
+gallery-3|02.jpg|2832x3776|portrait
+gallery-3|03.jpg|2703x3604|portrait
+gallery-3|04.jpg|3776x2832|landscape
+gallery-4|01.jpg|4672x7008|portrait
+gallery-4|02.jpg|4432x6648|portrait
+gallery-4|03.jpg|6678x4451|landscape
+gallery-4|04.jpg|4292x6439|portrait
+gallery-4|05.jpg|4672x7008|portrait
+gallery-4|06.jpg|3678x6550|portrait
+gallery-4|07.jpg|4503x6755|portrait
+gallery-4|08.jpg|4672x7008|portrait
+gallery-5|01.jpg|2832x3776|portrait
+gallery-5|02.jpg|2832x3776|portrait
+gallery-5|03.jpg|2832x3776|portrait
