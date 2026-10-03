@@ -73,6 +73,19 @@
   --dur-slow: 680ms;
 }
 
+/* Chinese sets tighter than Latin at the same nominal size, so the zh pages
+   read small and leave the measure looking empty. Bump the running-text steps
+   by 2px (~1.5pt). The display and title clamps are left alone: they are large
+   enough already and changing them would shift the hero layout. */
+html[data-lang="zh"] {
+  --text-heading: 1.5rem;
+  --text-subhead: 1.25rem;
+  --text-lead:    1.1875rem;
+  --text-body:    1.125rem;
+  --text-small:   1rem;
+  --text-label:   0.8125rem;
+}
+
 @media (max-width: 720px) {
   :root { --gutter: 1.5rem; --logo-height: 2.25rem; }
 }
