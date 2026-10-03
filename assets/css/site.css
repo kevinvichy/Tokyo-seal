@@ -198,6 +198,13 @@ html[data-lang="en"] .lang-toggle:hover .lang-toggle__opt[data-opt="en"] { color
 .gallery-grid .photo--landscape,
 .gallery-grid .photo--portrait { width: 100%; }
 
+/* A landscape frame in a 3-up set grid keeps its shape and takes two columns,
+   so the row still fills. 3/2 rather than 4/3 so its height lands close to the
+   portrait cell beside it. */
+.gallery-grid--3 .photo--landscape { grid-column: span 2; }
+.gallery-grid--3 .photo--landscape > img { aspect-ratio: 3 / 2; }
+@media (max-width: 600px) { .gallery-grid--3 .photo--landscape { grid-column: auto; } }
+
 @media (max-width: 900px) {
   .gallery-grid--4 { grid-template-columns: repeat(3, 1fr); }
   .gallery-grid--3,
